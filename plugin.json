@@ -1,0 +1,32 @@
+{
+	"id": "nodebb-plugin-events",
+	"name": "Topic Events plugin for NodeBB",
+	"description": "Catches events such as topic pinned/unpinned, locked/unlocked, and moved. Adds a small notification inline within the thread, with the moderator's picture, username, brief description of the event, and timestamp.",
+	"url": "https://github.com/NodeBB/nodebb-plugin-events",
+	"library": "./library.js",
+	"hooks": [
+		{
+			"hook": "action:topic.pin", "method": "topicPinned"
+		},
+		{
+			"hook": "action:topic.pin", "method": "topicLocked"
+		},
+		{
+			"hook": "action:topic.pin", "method": "topicMoved"
+		},
+		{
+			"hook": "filter:app.load", "method": "init"
+		}
+	],
+	"staticDirs": {
+		"static": "./static"
+	},
+	"less": [
+		"static/style.less"
+	],
+	"scripts": [
+		"static/lib/main.js"
+	],
+	"languages": "languages",
+	"templates": "templates"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "nodebb-plugin-events",
+  "version": "0.0.1",
+  "description": "Topic Events plugin for NodeBB",
+  "main": "library.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/psychobunny/nodebb-plugin-events"
+  },
+  "keywords": [
+    "nodebb",
+    "plugin",
+    "topic",
+    "events",
+    "thread",
+    "pin",
+    "lock",
+    "move"
+  ],
+  "author": {
+    "name": "psychobunny",
+    "email": "psycho.bunny@hotmail.com"
+  },
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/psychobunny/nodebb-plugin-events/issues"
+  },
+  "readmeFilename": "README.md"
+}
