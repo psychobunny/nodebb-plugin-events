@@ -12,12 +12,14 @@ $('document').ready(function() {
 		}
 	});
 
+	$(window).trigger('action:posts.loaded', getEventsData);
+
 	socket.on('event:topic_pinned', getEventsData);
 	socket.on('event:topic_unpinned', getEventsData);
 
 
 	function getEventsData(data) {
-		tid = data.tid;
+		tid = data.tid || ajaxify.variables.get('topic_id');
 
 		$.get(RELATIVE_PATH + '/api/events/tid/' + tid, function(events) {
 			$.each(events, function(idx, data) {
