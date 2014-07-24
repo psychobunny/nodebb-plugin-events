@@ -1,7 +1,13 @@
 "use strict";
 
 var plugin = {},
-	db = module.parent.require('./database');
+	db = module.parent.require('./database'),
+	user = module.parent.require('./user');
+
+
+/*
+* TODO: don't forget to add the topics/delete hook
+*/
 
 plugin.init = function(app, middleware, controllers) {
 	console.log('nodebb-plugin-events: loaded');
@@ -9,10 +15,21 @@ plugin.init = function(app, middleware, controllers) {
 
 plugin.topicPinned = function(data) {
 	var tid = data.tid,
-		isPinned = data.isPinned,
-		uid = data.uid;
+		isPinned = data.isPinned ? 'pinned' : 'unpinned',
+		uid = data.uid,
+		timestamp = data.timestamp;
 
-	db.sortedSetAdd('topic:' + tid + ':events', {});
+	user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, data) {
+		data = {
+			content: translator.compile('events:topic.' + isPinned, data.userslug, data.username, timestamp),
+			class: 'warning',
+			timestamp: timestamp,
+			avatar: data.picture,
+			username: data.username
+		};
+
+		db.sortedSetAdd('topic:' + tid + ':events', timestamp, JSON.stringify(data));
+	});	
 };
 
 plugin.topicLocked = function(data) {
@@ -34,9 +51,18 @@ plugin.init = function(router, middleware, controllers, callback) {
 };
 
 function appendEvents(req, res, next) {
-	console.log('HERE', req.params.tid);
+	var tid = req.params.tid || 0;
 
-	var data = {};
+	db.getSortedSetRevRange('topic:' + tid + ':events', 0, -1, function(err, raw) {
+		var events = [];
+		raw.forEach(function(data) {
+			events.push(JSON.parse(data));
+		});
+
+		res.json(events);
+	});
+
+	/*var data = {};
 	data.events = [
 		{
 			timestamp: 1400266282577,
@@ -50,7 +76,7 @@ function appendEvents(req, res, next) {
 		}
 	]
 
-	res.json(data);
+	res.json(data);*/
 };
 
 module.exports = plugin;
