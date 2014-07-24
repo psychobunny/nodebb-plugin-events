@@ -16,17 +16,18 @@ plugin.init = function(app, middleware, controllers) {
 
 plugin.topicPinned = function(data) {
 	var tid = data.tid,
-		isPinned = data.isPinned ? 'pinned' : 'unpinned',
+		isPinned = data.isPinned,
 		uid = data.uid,
 		timestamp = data.timestamp;
 
 	user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
 		var eventData = {
-			content: translator.compile('events:topic.' + isPinned, userData.userslug, userData.username, timestamp),
-			class: data.isPinned ? 'success' : 'warning',
+			eventType: 'pin',
+			isPinned: isPinned,
 			timestamp: timestamp,
 			avatar: userData.picture,
-			username: userData.username
+			username: userData.username,
+			userslug: userData.userslug
 		};
 
 		db.sortedSetAdd('topic:' + tid + ':events', timestamp, JSON.stringify(eventData));
