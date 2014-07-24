@@ -8,15 +8,15 @@ $('document').ready(function() {
 		if (tid = data.url.match(/^topic\/(\d*)/)) {
 			tid = tid[1];
 
-			$.get(RELATIVE_PATH + '/api/events/tid/' + tid, function(data) {
-				var events = data.events;
-
+			$.get(RELATIVE_PATH + '/api/events/tid/' + tid, function(events) {
 				for (var ev in events) {
 					if (events.hasOwnProperty(ev)) {
 						var data = {
 							content: events[ev].content,
 							timestamp: events[ev].timestamp,
-							class: events[ev].class
+							class: events[ev].class,
+							avatar: events[ev].avatar,
+							username: events[ev].username
 						};
 
 						templates.parse('events/topic', data, function(tpl) {
@@ -28,6 +28,7 @@ $('document').ready(function() {
 										nextRow = rows.eq(idx + 1),
 										nextRowTimestamp = nextRow.attr('data-timestamp') ? nextRow.attr('data-timestamp') : data.timestamp + 1;
 
+									console.log($this.attr('data-timestamp'), data.timestamp, nextRowTimestamp);
 									if ($this.attr('data-timestamp') < data.timestamp && nextRowTimestamp > data.timestamp) {
 										$(content).insertAfter($this).find('.timeago').timeago();
 										return false;

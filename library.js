@@ -2,7 +2,8 @@
 
 var plugin = {},
 	db = module.parent.require('./database'),
-	user = module.parent.require('./user');
+	user = module.parent.require('./user'),
+	translator = module.parent.require('../public/src/translator');
 
 
 /*
@@ -19,16 +20,16 @@ plugin.topicPinned = function(data) {
 		uid = data.uid,
 		timestamp = data.timestamp;
 
-	user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, data) {
-		data = {
-			content: translator.compile('events:topic.' + isPinned, data.userslug, data.username, timestamp),
-			class: 'warning',
+	user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
+		var eventData = {
+			content: translator.compile('events:topic.' + isPinned, userData.userslug, userData.username, timestamp),
+			class: data.isPinned ? 'success' : 'warning',
 			timestamp: timestamp,
-			avatar: data.picture,
-			username: data.username
+			avatar: userData.picture,
+			username: userData.username
 		};
 
-		db.sortedSetAdd('topic:' + tid + ':events', timestamp, JSON.stringify(data));
+		db.sortedSetAdd('topic:' + tid + ':events', timestamp, JSON.stringify(eventData));
 	});	
 };
 
@@ -61,22 +62,6 @@ function appendEvents(req, res, next) {
 
 		res.json(events);
 	});
-
-	/*var data = {};
-	data.events = [
-		{
-			timestamp: 1400266282577,
-			class: 'warning',
-			content: '[[events:topic.unpinned, psychobunny, 2014-05-16T18:55:22.572Z]]'
-		},
-		{
-			timestamp: 1400266282575,
-			class: 'success',
-			content: '[[events:topic.pinned, psychobunny, 2014-05-16T18:55:22.572Z]]'
-		}
-	]
-
-	res.json(data);*/
 };
 
 module.exports = plugin;
