@@ -33,7 +33,6 @@ $('document').ready(function() {
 					return true;
 				}
 
-				console.log($('.events-topic[data-timestamp="' + data.timestamp + '"]').length, data.isPinned);
 				if ($('.events-topic[data-timestamp="' + data.timestamp + '"]').length) {
 					return true;
 				}
