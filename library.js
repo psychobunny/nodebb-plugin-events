@@ -55,7 +55,7 @@ plugin.init = function(router, middleware, controllers, callback) {
 function appendEvents(req, res, next) {
 	var tid = req.params.tid || 0;
 
-	db.getSortedSetRevRange('topic:' + tid + ':events', 0, -1, function(err, raw) {
+	db.getSortedSetRange('topic:' + tid + ':events', 0, -1, function(err, raw) {
 		var events = [];
 		raw.forEach(function(data) {
 			events.push(JSON.parse(data));
