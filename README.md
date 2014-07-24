@@ -8,4 +8,4 @@ Catches events such as topic pinned/unpinned, locked/unlocked, and moved. Adds a
 
 ## Screenshots
 
-Coming soon!
+![](http://i.imgur.com/7XRmnU6.png)
