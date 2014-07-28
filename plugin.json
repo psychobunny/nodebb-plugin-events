@@ -15,7 +15,7 @@
 			"hook": "action:topic.move", "method": "topicMoved"
 		},
 		{
-			"hook": "filter:app.load", "method": "init"
+			"hook": "static:app.load", "method": "init"
 		}
 	],
 	"staticDirs": {

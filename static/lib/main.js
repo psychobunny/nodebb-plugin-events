@@ -46,9 +46,11 @@ $('document').ready(function() {
 					break;
 				case 'move' :
 					var from = data.categories.from,
-						to = data.categories.to;
+						to = data.categories.to,
+						fromSlug = RELATIVE_PATH + '/category/' + from.slug,
+						toSlug =  RELATIVE_PATH + '/category/' + to.slug;
 
-					data.content = translator.compile(str, userUrl, data.username, from.slug, from.name, to.slug, to.name, timestamp);
+					data.content = translator.compile('events:topic.moved', userUrl, data.username, fromSlug, from.name, toSlug, to.name, timestamp);
 					data.class = 'info';
 					break;
 				default :
