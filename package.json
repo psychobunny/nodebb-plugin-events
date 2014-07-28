@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-events",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Topic Events plugin for NodeBB",
   "main": "library.js",
   "repository": {
