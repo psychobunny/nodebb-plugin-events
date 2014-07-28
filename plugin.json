@@ -9,10 +9,10 @@
 			"hook": "action:topic.pin", "method": "topicPinned"
 		},
 		{
-			"hook": "action:topic.pin", "method": "topicLocked"
+			"hook": "action:topic.lock", "method": "topicLocked"
 		},
 		{
-			"hook": "action:topic.pin", "method": "topicMoved"
+			"hook": "action:topic.move", "method": "topicMoved"
 		},
 		{
 			"hook": "filter:app.load", "method": "init"
