@@ -9,3 +9,4 @@ Catches events such as topic pinned/unpinned, locked/unlocked, and moved. Adds a
 ## Screenshots
 
 ![](http://i.imgur.com/7XRmnU6.png)
+![](http://i.imgur.com/tixqP1Q.png)

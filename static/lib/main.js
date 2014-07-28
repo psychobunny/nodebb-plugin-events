@@ -7,9 +7,7 @@ $('document').ready(function() {
 		var url = data.url, tid;
 
 		if (tid = data.url.match(/^topic\/(\d*)/)) {
-			tid = tid[1];
-
-			getEventsData({tid: tid});
+			getEventsData({tid: tid[1]});
 		}
 	});
 
