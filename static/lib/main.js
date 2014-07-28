@@ -1,4 +1,5 @@
 "use strict";
+/*global socket, ajaxify, RELATIVE_PATH, utils, translator, templates*/
 
 $('document').ready(function() {
 	//todo: experiment with pre-loading this info on ajaxify.start
@@ -22,23 +23,24 @@ $('document').ready(function() {
 
 
 	function getEventsData(data) {
-		tid = data.tid || ajaxify.variables.get('topic_id');
+		var tid = data.tid || ajaxify.variables.get('topic_id');
 
 		$.get(RELATIVE_PATH + '/api/events/tid/' + tid, function(events) {
 			$.each(events, function(idx, data) {
 				var timestamp = utils.toISOString(data.timestamp),
-					userUrl = RELATIVE_PATH + '/users/' + data.userslug;
+					userUrl = RELATIVE_PATH + '/users/' + data.userslug,
+					str;
 
 				switch (data.eventType) {
 				case 'pin' :
-					var str = 'events:topic.' + (data.isPinned ? 'pinned' : 'unpinned');
+					str = 'events:topic.' + (data.isPinned ? 'pinned' : 'unpinned');
 
 					data.content = translator.compile(str, userUrl, data.username, timestamp);
 					data.class = data.isPinned ? 'success' : 'warning';
 					break;
 				case 'lock' :
-					var str = 'events:topic.' + (data.isLocked ? 'locked' : 'unlocked');
-					
+					str = 'events:topic.' + (data.isLocked ? 'locked' : 'unlocked');
+
 					data.content = translator.compile(str, userUrl, data.username, timestamp);
 					data.class = data.isLocked ? 'success' : 'warning';
 					break;
