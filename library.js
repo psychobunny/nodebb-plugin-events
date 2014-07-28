@@ -77,7 +77,7 @@ plugin.topicMoved = function(data) {
 			avatar: data.user.picture,
 			username: data.user.username,
 			userslug: data.user.userslug,
-			categories {
+			categories: {
 				from: {
 					name: data.categories[0].name,
 					slug: data.categories[0].slug
