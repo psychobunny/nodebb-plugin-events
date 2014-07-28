@@ -94,11 +94,11 @@ plugin.topicMoved = function(data) {
 };
 
 plugin.init = function(router, middleware, controllers, callback) {
-	router.get('/api/events/tid/:tid', appendEvents);
+	router.get('/api/events/tid/:tid', listTopicEvents);
 	callback();
 };
 
-function appendEvents(req, res, next) {
+function listTopicEvents(req, res, next) {
 	var tid = req.params.tid || 0;
 
 	db.getSortedSetRange('topic:' + tid + ':events', 0, -1, function(err, raw) {
