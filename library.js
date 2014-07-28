@@ -3,6 +3,8 @@
 var plugin = {},
 	db = module.parent.require('./database'),
 	user = module.parent.require('./user'),
+	async = module.parent.require('async'),
+	categories = module.parent.require('./categories'),
 	translator = module.parent.require('../public/src/translator');
 
 
@@ -58,7 +60,37 @@ plugin.topicMoved = function(data) {
 	var tid = data.tid,
 		fromCid = data.fromCid,
 		toCid = data.toCid,
-		uid = data.uid;
+		uid = data.uid,
+		timestamp = data.timestamp;
+
+	async.parallel({
+		user: function(next) {
+			user.getUserFields(uid, ['username', 'userslug', 'picture'], next);
+		},
+		categories: function(next) {
+			categories.getCategoriesData([fromCid, toCid], next);
+		}
+	}, function(err, data) {
+		var eventData = {
+			eventType: 'move',
+			timestamp: timestamp,
+			avatar: data.user.picture,
+			username: data.user.username,
+			userslug: data.user.userslug,
+			categories {
+				from: {
+					name: data.categories[0].name,
+					slug: data.categories[0].slug
+				},
+				to: {
+					name: data.categories[1].name,
+					slug: data.categories[1].slug
+				}
+			}
+		};
+
+		db.sortedSetAdd('topic:' + tid + ':events', timestamp, JSON.stringify(eventData));
+	});
 };
 
 plugin.init = function(router, middleware, controllers, callback) {
