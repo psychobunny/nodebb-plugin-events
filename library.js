@@ -37,7 +37,21 @@ plugin.topicPinned = function(data) {
 plugin.topicLocked = function(data) {
 	var tid = data.tid,
 		isLocked = data.isLocked,
-		uid = data.uid;
+		uid = data.uid,
+		timestamp = data.timestamp;
+
+	user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
+		var eventData = {
+			eventType: 'lock',
+			isLocked: isLocked,
+			timestamp: timestamp,
+			avatar: userData.picture,
+			username: userData.username,
+			userslug: userData.userslug
+		};
+
+		db.sortedSetAdd('topic:' + tid + ':events', timestamp, JSON.stringify(eventData));
+	});	
 };
 
 plugin.topicMoved = function(data) {
