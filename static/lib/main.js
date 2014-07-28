@@ -16,6 +16,8 @@ $('document').ready(function() {
 
 	socket.on('event:topic_pinned', getEventsData);
 	socket.on('event:topic_unpinned', getEventsData);
+	socket.on('event:topic_locked', getEventsData);
+	socket.on('event:topic_unlocked', getEventsData);
 
 
 	function getEventsData(data) {
@@ -28,6 +30,11 @@ $('document').ready(function() {
 					var str = 'events:topic.' + (data.isPinned ? 'pinned' : 'unpinned');
 					data.content = translator.compile(str, RELATIVE_PATH + '/users/' + data.userslug, data.username, utils.toISOString(data.timestamp));
 					data.class = data.isPinned ? 'success' : 'warning';
+					break;
+				case 'lock' :
+					var str = 'events:topic.' + (data.isLocked ? 'locked' : 'unlocked');
+					data.content = translator.compile(str, RELATIVE_PATH + '/users/' + data.userslug, data.username, utils.toISOString(data.timestamp));
+					data.class = data.isLocked ? 'success' : 'warning';
 					break;
 				default :
 					return true;
