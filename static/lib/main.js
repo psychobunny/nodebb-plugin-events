@@ -26,7 +26,7 @@ $('document').ready(function() {
 		$.get(RELATIVE_PATH + '/api/events/tid/' + tid, function(events) {
 			$.each(events, function(idx, data) {
 				var timestamp = utils.toISOString(data.timestamp),
-					userUrl = RELATIVE_PATH + '/users/' + data.userslug,
+					userUrl = RELATIVE_PATH + '/user/' + data.userslug,
 					str;
 
 				switch (data.eventType) {
