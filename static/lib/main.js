@@ -84,14 +84,12 @@ $('document').ready(function() {
 
 						contentEl.find('.timeago').timeago();
 
-						// BEGIN: very lavender specific styling here. Not sure how this pans out on other themes.
-						contentEl.prev().css('margin-bottom', '0px');
+						contentEl.prev().addClass('events-topic-before');
 						if (!contentEl.next().length) {
-							$('.bottom-post-bar').css('margin-top', '0px');
+							$('.bottom-post-bar').addClass('events-topic-after');
 						} else {
-							contentEl.next().css('margin-top', '0px');	
+							contentEl.next().addClass('events-topic-after')	;
 						}
-						// END: very lavender specific styling here. Not sure how this pans out on other themes.
 						
 						return false;
 					}

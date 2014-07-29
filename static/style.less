@@ -1,36 +1,46 @@
-.events-topic {
-	img {
-		border-radius: 100%;
-		width: 19px;
-		height: 19px;
-		margin-left: -11px;
+.topic .posts {
+	.events-topic {
+		img {
+			border-radius: 100%;
+			width: 19px;
+			height: 19px;
+			margin-left: -11px;
+		}
+
+		> span {
+			font-size: 85%;
+		}
+
+		height: 40px;
+		margin-left: 15px;
+		padding-top: 10px;
+
+		&.success {
+			border-left: 4px solid @brand-success;
+		}
+
+		&.info {
+			border-left: 4px solid @brand-info;
+		}
+
+		&.danger {
+			border-left: 4px solid @brand-danger;
+		}
+
+		&.warning {
+			border-left: 4px solid @brand-warning;
+		}
+
+		&.primary {
+			border-left: 4px solid @brand-primary;
+		}
 	}
 
-	> span {
-		font-size: 85%;
+	.events-topic-before {
+		margin-bottom: 0px;
 	}
 
-	height: 40px;
-	margin-left: 15px;
-	padding-top: 10px;
-
-	&.success {
-		border-left: 4px solid @brand-success;
-	}
-
-	&.info {
-		border-left: 4px solid @brand-info;
-	}
-
-	&.danger {
-		border-left: 4px solid @brand-danger;
-	}
-
-	&.warning {
-		border-left: 4px solid @brand-warning;
-	}
-
-	&.primary {
-		border-left: 4px solid @brand-primary;
+	.events-topic-after {
+		margin-top: 0px;
 	}
 }
