@@ -11,7 +11,7 @@ $('document').ready(function() {
 		}
 	});
 
-	$(window).trigger('action:posts.loaded', getEventsData);
+	$(window).on('action:posts.loaded', getEventsData);
 
 	socket.on('event:topic_pinned', getEventsData);
 	socket.on('event:topic_unpinned', getEventsData);
