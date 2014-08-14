@@ -1,9 +1,10 @@
 "use strict";
 
 var plugin = {},
+	async = module.parent.require('async'),
 	db = module.parent.require('./database'),
 	user = module.parent.require('./user'),
-	async = module.parent.require('async'),
+	plugins = module.parent.require('./plugins'),
 	categories = module.parent.require('./categories'),
 	translator = module.parent.require('../public/src/translator');
 
@@ -12,18 +13,19 @@ var plugin = {},
 * TODO: don't forget to add the topics/delete hook
 */
 
-function addEvent(eventType, typeID, eventName, timestamp, eventData, callback) {
+
+plugin.addEvent = function(eventType, typeID, eventName, timestamp, eventData) {
 	var key = eventType + ':' + typeID + ':events';
 
 	db.delete(key + ':' + eventName, function() {
 		db.sortedSetRemove(key, eventName, function(err) {
 			db.sortedSetAdd(key, timestamp, eventName);
-			db.setObject(key + ':' + eventName, eventData, callback);
+			db.setObject(key + ':' + eventName, eventData);
 		});
 	});
 }
 
-function getEvents(eventType, typeID, callback) {
+plugin.getEvents = function(eventType, typeID, callback) {
 	var key = eventType + ':' + typeID + ':events';
 
 	db.getSortedSetRange(key, 0, -1, function(err, eventNames) {
@@ -42,7 +44,6 @@ function getEvents(eventType, typeID, callback) {
 	});
 }
 
-
 plugin.topicPinned = function(data) {
 	var tid = data.tid,
 		isPinned = data.isPinned,
@@ -59,7 +60,7 @@ plugin.topicPinned = function(data) {
 				userslug: userData.userslug
 			};
 
-		addEvent('topic', tid, eventType, timestamp, eventData);
+		plugin.addEvent('topic', tid, eventType, timestamp, eventData);
 	});	
 };
 
@@ -79,7 +80,7 @@ plugin.topicLocked = function(data) {
 				userslug: userData.userslug
 			};
 
-		addEvent('topic', tid, eventType, timestamp, eventData);
+		plugin.addEvent('topic', tid, eventType, timestamp, eventData);
 	});	
 };
 
@@ -116,7 +117,7 @@ plugin.topicMoved = function(data) {
 				}
 			};
 
-		addEvent('topic', tid, 'moved:' + toCid, timestamp, eventData);
+		plugin.addEvent('topic', tid, 'moved:' + toCid, timestamp, eventData);
 	});
 };
 
@@ -128,9 +129,9 @@ plugin.init = function(router, middleware, controllers, callback) {
 function listTopicEvents(req, res, next) {
 	var tid = req.params.tid || 0;
 
-	getEvents('topic', tid, function(err, events) {
+	plugin.getEvents('topic', tid, function(err, events) {
 		res.json(events);
 	});
-};
+}
 
 module.exports = plugin;

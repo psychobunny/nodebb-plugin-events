@@ -13,6 +13,9 @@
 		},
 		{
 			"hook": "action:topic.move", "method": "topicMoved"
+		},
+		{
+			"hook": "action:event.add", "method": "addEvent"
 		}
 	],
 	"staticDirs": {
