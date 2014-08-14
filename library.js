@@ -23,7 +23,7 @@ plugin.addEvent = function(eventType, typeID, eventName, timestamp, eventData) {
 			db.setObject(key + ':' + eventName, eventData);
 		});
 	});
-}
+};
 
 plugin.getEvents = function(eventType, typeID, callback) {
 	var key = eventType + ':' + typeID + ':events';
@@ -42,7 +42,7 @@ plugin.getEvents = function(eventType, typeID, callback) {
 			callback(err, events);
 		});
 	});
-}
+};
 
 plugin.topicPinned = function(data) {
 	var tid = data.tid,
