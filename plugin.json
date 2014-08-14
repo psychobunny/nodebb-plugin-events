@@ -15,6 +15,9 @@
 			"hook": "action:topic.move", "method": "topicMoved"
 		},
 		{
+			"hook": "action:user.follow", "method": "userFollowed"
+		},
+		{
 			"hook": "action:event.add", "method": "addEvent"
 		},
 		{

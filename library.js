@@ -121,6 +121,23 @@ plugin.topicMoved = function(data) {
 	});
 };
 
+plugin.userFollowed = function(data) {
+	var toUid = data.toUid,
+		fromUid = data.fromUid,
+		timestamp = Date.now();
+
+	user.getMultipleUserFields([toUid, fromUid], ['username', 'userslug', 'picture'], function(err, data) {
+		var eventData = {
+				eventType: 'followed',
+				timestamp: timestamp,
+				toUser: data[0],
+				fromUser: data[1]
+			};
+
+		//plugin.addEvent('user', fromUid)
+	});
+};
+
 plugin.init = function(router, middleware, controllers, callback) {
 	router.get('/api/events/tid/:tid', listTopicEvents);
 	router.get('/api/events/uid/:uid', listUserEvents);
