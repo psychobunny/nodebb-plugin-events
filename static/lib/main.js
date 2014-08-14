@@ -30,17 +30,19 @@ $('document').ready(function() {
 					str;
 
 				switch (data.eventType) {
-				case 'pin' :
-					str = 'events:topic.' + (data.isPinned ? 'pinned' : 'unpinned');
+				case 'pinned' :
+				case 'unpinned' :
+					str = 'events:topic.' + data.eventType;
 
 					data.content = translator.compile(str, userUrl, data.username, timestamp);
-					data.class = data.isPinned ? 'success' : 'warning';
+					data.class = data.eventType === 'pinned' ? 'success' : 'warning';
 					break;
-				case 'lock' :
-					str = 'events:topic.' + (data.isLocked ? 'locked' : 'unlocked');
+				case 'locked' :
+				case 'unlocked' :
+					str = 'events:topic.' + data.eventType;
 
 					data.content = translator.compile(str, userUrl, data.username, timestamp);
-					data.class = data.isLocked ? 'success' : 'warning';
+					data.class = data.eventType === 'locked' ? 'success' : 'warning';
 					break;
 				case 'move' :
 					var from = data.categories.from,
@@ -65,6 +67,7 @@ $('document').ready(function() {
 	}
 
 	function createEventRow(data, idx) {
+		// the async nature of this function causes occasional hiccups on the placing of events
 		templates.parse('events/topic', data, function(tpl) {
 			translator.translate(tpl, function(content) {
 

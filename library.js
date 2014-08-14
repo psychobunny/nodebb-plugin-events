@@ -12,9 +12,36 @@ var plugin = {},
 * TODO: don't forget to add the topics/delete hook
 */
 
-plugin.init = function(app, middleware, controllers) {
-	console.log('nodebb-plugin-events: loaded');
-};
+function addEvent(eventType, typeID, eventName, timestamp, eventData, callback) {
+	var key = eventType + ':' + typeID + ':events';
+
+	db.delete(key + ':' + eventName, function() {
+		db.sortedSetRemove(key, eventName, function(err) {
+			db.sortedSetAdd(key, timestamp, eventName);
+			db.setObject(key + ':' + eventName, eventData, callback);
+		});
+	});
+}
+
+function getEvents(eventType, typeID, callback) {
+	var key = eventType + ':' + typeID + ':events';
+
+	db.getSortedSetRange(key, 0, -1, function(err, eventNames) {
+		var events = [];
+		async.eachSeries(eventNames, function(eventName, next) {
+			db.getObject(key + ':' + eventName, function(err, data) {
+				if (data !== null) {
+					events.push(data);	
+				}
+				
+				next(err);
+			});
+		}, function(err) {
+			callback(err, events);
+		});
+	});
+}
+
 
 plugin.topicPinned = function(data) {
 	var tid = data.tid,
@@ -23,16 +50,16 @@ plugin.topicPinned = function(data) {
 		timestamp = data.timestamp;
 
 	user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
-		var eventData = {
-			eventType: 'pin',
-			isPinned: isPinned,
-			timestamp: timestamp,
-			avatar: userData.picture,
-			username: userData.username,
-			userslug: userData.userslug
-		};
+		var eventType = isPinned ? 'pinned' : 'unpinned',
+			eventData = {
+				eventType: eventType,
+				timestamp: timestamp,
+				picture: userData.picture,
+				username: userData.username,
+				userslug: userData.userslug
+			};
 
-		db.sortedSetAdd('topic:' + tid + ':events', timestamp, JSON.stringify(eventData));
+		addEvent('topic', tid, eventType, timestamp, eventData);
 	});	
 };
 
@@ -43,16 +70,16 @@ plugin.topicLocked = function(data) {
 		timestamp = data.timestamp;
 
 	user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
-		var eventData = {
-			eventType: 'lock',
-			isLocked: isLocked,
-			timestamp: timestamp,
-			avatar: userData.picture,
-			username: userData.username,
-			userslug: userData.userslug
-		};
+		var eventType = isLocked ? 'locked' : 'unlocked',
+			eventData = {
+				eventType: eventType,
+				timestamp: timestamp,
+				picture: userData.picture,
+				username: userData.username,
+				userslug: userData.userslug
+			};
 
-		db.sortedSetAdd('topic:' + tid + ':events', timestamp, JSON.stringify(eventData));
+		addEvent('topic', tid, eventType, timestamp, eventData);
 	});	
 };
 
@@ -72,24 +99,24 @@ plugin.topicMoved = function(data) {
 		}
 	}, function(err, data) {
 		var eventData = {
-			eventType: 'move',
-			timestamp: timestamp,
-			avatar: data.user.picture,
-			username: data.user.username,
-			userslug: data.user.userslug,
-			categories: {
-				from: {
-					name: data.categories[0].name,
-					slug: data.categories[0].slug
-				},
-				to: {
-					name: data.categories[1].name,
-					slug: data.categories[1].slug
+				eventType: 'move',
+				timestamp: timestamp,
+				picture: data.user.picture,
+				username: data.user.username,
+				userslug: data.user.userslug,
+				categories: {
+					from: {
+						name: data.categories[0].name,
+						slug: data.categories[0].slug
+					},
+					to: {
+						name: data.categories[1].name,
+						slug: data.categories[1].slug
+					}
 				}
-			}
-		};
+			};
 
-		db.sortedSetAdd('topic:' + tid + ':events', timestamp, JSON.stringify(eventData));
+		addEvent('topic', tid, 'moved:' + toCid, timestamp, eventData);
 	});
 };
 
@@ -101,12 +128,7 @@ plugin.init = function(router, middleware, controllers, callback) {
 function listTopicEvents(req, res, next) {
 	var tid = req.params.tid || 0;
 
-	db.getSortedSetRange('topic:' + tid + ':events', 0, -1, function(err, raw) {
-		var events = [];
-		raw.forEach(function(data) {
-			events.push(JSON.parse(data));
-		});
-
+	getEvents('topic', tid, function(err, events) {
 		res.json(events);
 	});
 };

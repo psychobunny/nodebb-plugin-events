@@ -13,9 +13,6 @@
 		},
 		{
 			"hook": "action:topic.move", "method": "topicMoved"
-		},
-		{
-			"hook": "static:app.load", "method": "init"
 		}
 	],
 	"staticDirs": {
