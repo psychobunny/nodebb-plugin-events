@@ -16,6 +16,9 @@
 		},
 		{
 			"hook": "action:event.add", "method": "addEvent"
+		},
+		{
+			"hook": "static:app.load", "method": "init"
 		}
 	],
 	"staticDirs": {

@@ -48,7 +48,7 @@ plugin.topicPinned = function(data) {
 	var tid = data.tid,
 		isPinned = data.isPinned,
 		uid = data.uid,
-		timestamp = data.timestamp;
+		timestamp = Date.now();
 
 	user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
 		var eventType = isPinned ? 'pinned' : 'unpinned',
@@ -68,7 +68,7 @@ plugin.topicLocked = function(data) {
 	var tid = data.tid,
 		isLocked = data.isLocked,
 		uid = data.uid,
-		timestamp = data.timestamp;
+		timestamp = Date.now();
 
 	user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
 		var eventType = isLocked ? 'locked' : 'unlocked',
@@ -89,7 +89,7 @@ plugin.topicMoved = function(data) {
 		fromCid = data.fromCid,
 		toCid = data.toCid,
 		uid = data.uid,
-		timestamp = data.timestamp;
+		timestamp = Date.now();
 
 	async.parallel({
 		user: function(next) {
