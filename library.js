@@ -123,6 +123,7 @@ plugin.topicMoved = function(data) {
 
 plugin.init = function(router, middleware, controllers, callback) {
 	router.get('/api/events/tid/:tid', listTopicEvents);
+	router.get('/api/events/uid/:uid', listUserEvents);
 	callback();
 };
 
@@ -130,6 +131,14 @@ function listTopicEvents(req, res, next) {
 	var tid = req.params.tid || 0;
 
 	plugin.getEvents('topic', tid, function(err, events) {
+		res.json(events);
+	});
+}
+
+function listUserEvents(req, res, next) {
+	var uid = req.params.uid || 0;
+
+	plugin.getEvents('user', uid, function(err, events) {
 		res.json(events);
 	});
 }
