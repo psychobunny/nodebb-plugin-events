@@ -3,5 +3,7 @@
 	"topic.unpinned": "<a href=\"%1\">%2</a> unpinned this topic <span class=\"timeago\" title=\"%3\"></span>",
 	"topic.locked": "<a href=\"%1\">%2</a> locked this topic <span class=\"timeago\" title=\"%3\"></span>",
 	"topic.unlocked": "<a href=\"%1\">%2</a> unlocked this topic <span class=\"timeago\" title=\"%3\"></span>",
-	"topic.moved": "<a href=\"%1\">%2</a> moved this topic from <a href=\"%3\">%4</a> to <a href=\"%5\">%6</a> <span class=\"timeago\" title=\"%7\"></span>"
+	"topic.moved": "<a href=\"%1\">%2</a> moved this topic from <a href=\"%3\">%4</a> to <a href=\"%5\">%6</a> <span class=\"timeago\" title=\"%7\"></span>",
+	"user.followed": "<a href=\"%1\">%2</a> was followed by <a href=\"%3\">%4</a>",
+	"user.following": "<a href=\"%1\">%2</a> is now following <a href=\"%3\">%4</a>"
 }

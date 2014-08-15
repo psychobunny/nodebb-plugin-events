@@ -7,20 +7,49 @@ $('document').ready(function() {
 		var url = data.url, tid;
 
 		if (tid = data.url.match(/^topic\/(\d*)/)) {
-			getEventsData({tid: tid[1]});
+			getTopicEvents({tid: tid[1]});
+		} else if (data.url.match(/^user\//)) {
+			getUserEvents();
 		}
 	});
 
-	$(window).on('action:posts.loaded', getEventsData);
+	$(window).on('action:posts.loaded', getTopicEvents);
 
-	socket.on('event:topic_pinned', getEventsData);
-	socket.on('event:topic_unpinned', getEventsData);
-	socket.on('event:topic_locked', getEventsData);
-	socket.on('event:topic_unlocked', getEventsData);
-	socket.on('event:topic_moved', getEventsData);
+	socket.on('event:topic_pinned', getTopicEvents);
+	socket.on('event:topic_unpinned', getTopicEvents);
+	socket.on('event:topic_locked', getTopicEvents);
+	socket.on('event:topic_unlocked', getTopicEvents);
+	socket.on('event:topic_moved', getTopicEvents);
 
+	function getUserEvents(data) {
+		var uid = ajaxify.variables.get('theirid');
 
-	function getEventsData(data) {
+		$.get(RELATIVE_PATH + '/api/events/uid/' + uid, function(events) {
+			$.each(events, function(idx, data) {
+				var timestamp = utils.toISOString(data.timestamp),
+					str;
+
+				switch(data.eventType) {
+				case 'followed' :
+				case 'following' :
+					str = 'events:user.' + data.eventType;
+					var fromUserUrl = RELATIVE_PATH + '/user/' + data.fromUserslug,
+						toUserUrl = RELATIVE_PATH + '/user/' + data.toUserslug;
+
+					data.content = translator.compile(str, fromUserUrl, data.fromUsername, toUserUrl, data.toUsername);
+					data.class = 'info';
+
+					break;
+				default :
+					return true;
+				}
+				
+				// createUserEventRow(data, idx);
+			});
+		});
+	}
+
+	function getTopicEvents(data) {
 		var tid = data.tid || ajaxify.variables.get('topic_id');
 
 		$.get(RELATIVE_PATH + '/api/events/tid/' + tid, function(events) {
@@ -45,12 +74,10 @@ $('document').ready(function() {
 					data.class = data.eventType === 'locked' ? 'success' : 'warning';
 					break;
 				case 'move' :
-					var from = data.categories.from,
-						to = data.categories.to,
-						fromSlug = RELATIVE_PATH + '/category/' + from.slug,
-						toSlug =  RELATIVE_PATH + '/category/' + to.slug;
+					var fromSlug = RELATIVE_PATH + '/category/' + data.fromCategorySlug,
+						toSlug =  RELATIVE_PATH + '/category/' + data.toCategorySlug;
 
-					data.content = translator.compile('events:topic.moved', userUrl, data.username, fromSlug, from.name, toSlug, to.name, timestamp);
+					data.content = translator.compile('events:topic.moved', userUrl, data.username, fromSlug, data.fromCategoryName, toSlug, data.toCategoryName, timestamp);
 					data.class = 'info';
 					break;
 				default :
@@ -61,12 +88,12 @@ $('document').ready(function() {
 					return true;
 				}
 
-				createEventRow(data, idx);
+				createTopicEventRow(data, idx);
 			});
 		});
 	}
 
-	function createEventRow(data, idx) {
+	function createTopicEventRow(data, idx) {
 		// the async nature of this function causes occasional hiccups on the placing of events
 		templates.parse('events/topic', data, function(tpl) {
 			translator.translate(tpl, function(content) {

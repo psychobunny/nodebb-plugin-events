@@ -105,16 +105,10 @@ plugin.topicMoved = function(data) {
 				picture: data.user.picture,
 				username: data.user.username,
 				userslug: data.user.userslug,
-				categories: {
-					from: {
-						name: data.categories[0].name,
-						slug: data.categories[0].slug
-					},
-					to: {
-						name: data.categories[1].name,
-						slug: data.categories[1].slug
-					}
-				}
+				fromCategoryName: data.categories[0].name,
+				fromCategorySlug: data.categories[0].slug,
+				toCategoryName: data.categories[1].name,
+				toCategorySlug: data.categories[1].slug
 			};
 
 		plugin.addEvent('topic', tid, 'moved:' + toCid, timestamp, eventData);
@@ -128,13 +122,28 @@ plugin.userFollowed = function(data) {
 
 	user.getMultipleUserFields([toUid, fromUid], ['username', 'userslug', 'picture'], function(err, data) {
 		var eventData = {
-				eventType: 'followed',
+				eventType: 'following',
 				timestamp: timestamp,
-				toUser: data[0],
-				fromUser: data[1]
+				toUsername: data[0].username,
+				toSlug: data[0].userslug,
+				toPicture: data[0].picture,
+				fromUsername: data[1].username,
+				fromSlug: data[1].userslug,
+				fromPicture: data[1].picture
 			};
 
-		//plugin.addEvent('user', fromUid)
+		plugin.addEvent('user', fromUid, 'following:' + toUid, timestamp, eventData);
+
+
+		eventData.toUsername = data[1].username,
+		eventData.toSlug = data[1].userslug,
+		eventData.toPicture = data[1].picture,
+		eventData.fromUsername = data[0].username,
+		eventData.fromSlug = data[0].userslug,
+		eventData.fromPicture = data[0].picture
+		eventData.eventType = 'followed';
+
+		plugin.addEvent('user', toUid, 'followed:' + fromUid, timestamp, eventData);
 	});
 };
 
