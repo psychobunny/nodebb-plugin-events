@@ -147,9 +147,9 @@ plugin.userFollowed = function(data) {
 	});
 };
 
-plugin.init = function(router, middleware, controllers, callback) {
-	router.get('/api/events/tid/:tid', listTopicEvents);
-	router.get('/api/events/uid/:uid', listUserEvents);
+plugin.init = function(data, callback) {
+	data.router.get('/api/events/tid/:tid', listTopicEvents);
+	data.router.get('/api/events/uid/:uid', listUserEvents);
 	callback();
 };
 
